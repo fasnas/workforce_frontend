@@ -1,168 +1,175 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import {
-  LayoutDashboard,
-  Users,
-  Package,
-  BarChart3,
-  Settings,
-  ChevronLeft,
-  ChevronRight,
-  ChevronDown,
-  Shield,
-  FileText,
-  ShoppingCart,
-  UserCheck,
-  Activity,
+  LayoutDashboard, Users, Package, Settings,
+  ChevronDown, ChevronRight, X
 } from 'lucide-react';
 
-const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
-  const [openDropdown, setOpenDropdown] = useState(null);
+const menuItems = [
+  {
+    name: 'Dashboard',
+    path: '/admin/dashboard',
+    icon: LayoutDashboard,
+  },
+  {
+    name: 'Users',
+    icon: Users,
+    subItems: [
+      { name: 'All users',  path: '/admin/users'   },
+      { name: 'Add user',   path: '/admin/adduser' },
+    ],
+  },
+  {
+    name: 'Projects',
+    icon: Package,
+    subItems: [
+      { name: 'All projects', path: '/admin/allprojects' },
+      { name: 'Add project',  path: '/admin/addproject'  },
+    ],
+  },
+  {
+    name: 'Settings',
+    path: '/admin/settings',
+    icon: Settings,
+  },
+];
 
-  const menuItems = [
-    {
-      name: 'Dashboard',
-      path: '/admin/dashboard',
-      icon: LayoutDashboard,
-    },
-    {
-      name: 'User Management',
-      icon: Users,
-      subItems: [
-        { name: 'All Users', path: '/admin/users' },
-        { name: 'Add User', path: '/admin/adduser' },
-      ],
-    },
-    {
-      name: 'Projects',
-      icon: Package,
-      subItems: [
-        { name: 'All Projects', path: '/admin/allprojects' },
-        { name: 'Add Project', path: '/admin/addproject' },
-      ],
-    },
-    // {
-    //   name: 'Orders',
-    //   icon: ShoppingCart,
-    //   subItems: [
-    //     { name: 'All Orders', path: '/admin/orders' },
-    //     { name: 'Pending Orders', path: '/admin/orders/pending' },
-    //     { name: 'Completed Orders', path: '/admin/orders/completed' },
-    //   ],
-    // },
-    // {
-    //   name: 'Reports',
-    //   icon: BarChart3,
-    //   subItems: [
-    //     { name: 'Sales Report', path: '/admin/reports/sales' },
-    //     { name: 'User Report', path: '/admin/reports/users' },
-    //     { name: 'Activity Log', path: '/admin/reports/activity' },
-    //   ],
-    // },
-    {
-      name: 'System Settings',
-      path: '/admin/settings',
-      icon: Settings,
-    },
-  ];
+/* ── Single nav item ── */
+const NavItem = ({ item, collapsed, openDropdown, toggle }) => {
+  const location = useLocation();
+  const isGroupActive = item.subItems?.some(s => location.pathname.startsWith(s.path));
 
-  const toggleDropdown = (menuName) => {
-    if (openDropdown === menuName) {
-      setOpenDropdown(null);
-    } else {
-      setOpenDropdown(menuName);
-    }
-  };
-
-  return (
-    <div
-      className={`bg-gray-900 text-white transition-all duration-300 ${
-        sidebarOpen ? 'w-64' : 'w-20'
-      } flex flex-col`}
-    >
-      <div className="flex items-center justify-between p-4 border-b border-gray-700">
-        {sidebarOpen && (
-          <div>
-            <h1 className="text-xl font-bold">Admin Panel</h1>
-            <p className="text-xs text-gray-400 mt-1">Full Access</p>
-          </div>
-        )}
+  if (item.subItems) {
+    const open = openDropdown === item.name;
+    return (
+      <li>
         <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-1 rounded-lg hover:bg-gray-800 transition-colors"
+          onClick={() => toggle(item.name)}
+          title={collapsed ? item.name : undefined}
+          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors
+            ${isGroupActive ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}
         >
-          {sidebarOpen ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
+          <item.icon size={16} className="flex-shrink-0" />
+          {!collapsed && (
+            <>
+              <span className="flex-1 text-left font-medium">{item.name}</span>
+              <ChevronDown size={14} className={`transition-transform duration-150 ${open ? 'rotate-180' : ''}`} />
+            </>
+          )}
         </button>
-      </div>
 
-      <nav className="flex-1 overflow-y-auto mt-6">
-        <ul className="space-y-2 px-3">
-          {menuItems.map((item, index) => (
-            <li key={index}>
-              {item.subItems ? (
-                <div>
-                  <button
-                    onClick={() => toggleDropdown(item.name)}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-colors hover:bg-gray-800 ${
-                      sidebarOpen ? 'justify-between' : 'justify-center'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-3">
-                      <item.icon size={20} />
-                      {sidebarOpen && <span>{item.name}</span>}
-                    </div>
-                    {sidebarOpen && (
-                      <ChevronDown
-                        size={16}
-                        className={`transition-transform duration-200 ${
-                          openDropdown === item.name ? 'rotate-180' : ''
-                        }`}
-                      />
-                    )}
-                  </button>
-                  {sidebarOpen && openDropdown === item.name && (
-                    <ul className="ml-9 mt-2 space-y-1">
-                      {item.subItems.map((subItem, subIndex) => (
-                        <li key={subIndex}>
-                          <NavLink
-                            to={subItem.path}
-                            className={({ isActive }) =>
-                              `block px-3 py-2 text-sm rounded-lg transition-colors ${
-                                isActive
-                                  ? 'bg-gray-800 text-white'
-                                  : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-                              }`
-                            }
-                          >
-                            {subItem.name}
-                          </NavLink>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              ) : (
+        {!collapsed && open && (
+          <ul className="mt-1 ml-7 space-y-0.5 border-l border-white/10 pl-3">
+            {item.subItems.map(sub => (
+              <li key={sub.path}>
                 <NavLink
-                  to={item.path}
+                  to={sub.path}
                   className={({ isActive }) =>
-                    `flex items-center ${
-                      sidebarOpen ? 'justify-start' : 'justify-center'
-                    } space-x-3 px-3 py-2 rounded-lg transition-colors ${
-                      isActive
-                        ? 'bg-gray-800 text-white'
-                        : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-                    }`
+                    `block px-2 py-1.5 text-xs rounded-md transition-colors
+                    ${isActive ? 'text-white font-medium' : 'text-gray-500 hover:text-gray-300'}`
                   }
                 >
-                  <item.icon size={20} />
-                  {sidebarOpen && <span>{item.name}</span>}
+                  {sub.name}
                 </NavLink>
-              )}
-            </li>
+              </li>
+            ))}
+          </ul>
+        )}
+      </li>
+    );
+  }
+
+  return (
+    <li>
+      <NavLink
+        to={item.path}
+        title={collapsed ? item.name : undefined}
+        className={({ isActive }) =>
+          `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+          ${isActive ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`
+        }
+      >
+        <item.icon size={16} className="flex-shrink-0" />
+        {!collapsed && <span>{item.name}</span>}
+      </NavLink>
+    </li>
+  );
+};
+
+/* ── Sidebar ── */
+const AdminSidebar = ({ sidebarOpen, setSidebarOpen, mobileOpen, setMobileOpen }) => {
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const collapsed = !sidebarOpen;
+
+  const toggle = (name) => setOpenDropdown(p => p === name ? null : name);
+
+  const inner = (
+    <div className="flex flex-col h-full bg-gray-900">
+      {/* Logo */}
+      <div className={`flex items-center gap-3 px-4 h-14 border-b border-white/10 flex-shrink-0 ${collapsed ? 'justify-center' : ''}`}>
+        <div className="w-7 h-7 rounded-md bg-white/10 flex items-center justify-center flex-shrink-0">
+          <span className="text-white text-xs font-bold">A</span>
+        </div>
+        {!collapsed && (
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-white leading-tight truncate">Admin Panel</p>
+            <p className="text-xs text-gray-500 leading-tight">Full access</p>
+          </div>
+        )}
+      </div>
+
+      {/* Nav */}
+      <nav className="flex-1 overflow-y-auto px-2 py-4">
+        <ul className="space-y-0.5">
+          {menuItems.map(item => (
+            <NavItem
+              key={item.name}
+              item={item}
+              collapsed={collapsed}
+              openDropdown={openDropdown}
+              toggle={toggle}
+            />
           ))}
         </ul>
       </nav>
+
+      {/* Collapse toggle — desktop only */}
+      <div className="hidden md:flex px-2 pb-4">
+        <button
+          onClick={() => setSidebarOpen(p => !p)}
+          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-gray-500 hover:bg-white/5 hover:text-gray-300 transition-colors"
+        >
+          <ChevronRight size={14} className={`transition-transform duration-200 flex-shrink-0 ${collapsed ? '' : 'rotate-180'}`} />
+          {!collapsed && <span>Collapse</span>}
+        </button>
+      </div>
     </div>
+  );
+
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <div className={`hidden md:flex flex-col flex-shrink-0 h-full transition-all duration-200 ${collapsed ? 'w-14' : 'w-56'}`}>
+        {inner}
+      </div>
+
+      {/* Mobile overlay */}
+      {mobileOpen && (
+        <div className="md:hidden fixed inset-0 z-40 flex">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)} />
+          <div className="relative w-56 h-full z-50 flex flex-col shadow-xl">
+            {/* Close button */}
+            <button
+              onClick={() => setMobileOpen(false)}
+              className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-md bg-white/10 text-white z-10"
+            >
+              <X size={14} />
+            </button>
+            {inner}
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

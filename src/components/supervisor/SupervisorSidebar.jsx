@@ -1,133 +1,149 @@
 // SupervisorSidebar.jsx
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
-  Users,
-  Package,
-  BarChart3,
+  FolderKanban,
+  FolderPlus,
   ChevronLeft,
   ChevronRight,
   ChevronDown,
-  FileText,
-  ShoppingCart,
   Clock,
+  X,
+  Layers,
+  PlayCircle,
 } from 'lucide-react';
 
+const menuItems = [
+  {
+    name: 'Dashboard',
+    path: '/supervisor/dashboard',
+    icon: LayoutDashboard,
+  },
+  {
+    name: 'Create Project',
+    path: '/supervisor/addproject',
+    icon: FolderPlus,
+  },
+  {
+    name: 'All Projects',
+    icon: FolderKanban,
+    subItems: [
+      { name: 'Potential Projects', path: '/supervisor/potentialproject', icon: Layers },
+      { name: 'Ongoing Projects',   path: '/supervisor/ongoingprojects',  icon: PlayCircle },
+    ],
+  },
+  {
+    name: 'Leave Requests',
+    path: '/supervisor/leaves',
+    icon: Clock,
+  },
+];
+
 const SupervisorSidebar = ({ sidebarOpen, setSidebarOpen }) => {
-  const [openDropdown, setOpenDropdown] = useState(null);
-
-  const menuItems = [
-    {
-      name: 'Dashboard',
-      path: '/supervisor/dashboard',
-      icon: LayoutDashboard,
-    },
-    {
-      name: 'Create project',
-      path: '/supervisor/addproject',
-      icon: Package,
-    },
-    {
-      name: 'All project',
-      icon: Package,
-      subItems: [
-        { name: 'Potential Project', path: '/supervisor/potentialproject' },
-        { name: 'Ongoing Project', path: '/supervisor/ongoingprojects' },
-      ],
-    },
-    {
-      name: 'Orders',
-      icon: ShoppingCart,
-      subItems: [
-        { name: 'Manage Orders', path: '/supervisor/orders' },
-        { name: 'Order History', path: '/supervisor/orders/history' },
-      ],
-    },
-    {
-      name: 'Reports',
-      icon: BarChart3,
-      subItems: [
-        { name: 'Team Performance', path: '/supervisor/reports/performance' },
-        { name: 'Sales Overview', path: '/supervisor/reports/sales' },
-      ],
-    },
-    {
-      name: 'Leave Requests',
-      path: '/supervisor/leaves',
-      icon: Clock,
-    },
-  ];
-
-  const toggleDropdown = (menuName) => {
-    if (openDropdown === menuName) {
-      setOpenDropdown(null);
-    } else {
-      setOpenDropdown(menuName);
+  const location = useLocation();
+  const [openDropdown, setOpenDropdown] = useState(() => {
+    // Auto-open dropdown if a sub-route is active on mount
+    for (const item of menuItems) {
+      if (item.subItems?.some(s => location.pathname.startsWith(s.path))) {
+        return item.name;
+      }
     }
-  };
+    return null;
+  });
+
+  const toggleDropdown = (name) =>
+    setOpenDropdown(prev => (prev === name ? null : name));
+
+  const isSubActive = (item) =>
+    item.subItems?.some(s => location.pathname.startsWith(s.path));
+
+  const localUser = (() => {
+    try { return JSON.parse(localStorage.getItem('user')); } catch { return null; }
+  })();
 
   return (
-    <div
-      className={`bg-gray-800 text-white transition-all duration-300 ${
-        sidebarOpen ? 'w-64' : 'w-20'
-      } flex flex-col`}
+    <aside
+      className={`
+        h-full bg-gray-900 text-white flex flex-col
+        transition-all duration-300 shadow-2xl
+        ${sidebarOpen ? 'w-64' : 'w-64 lg:w-20'}
+      `}
     >
-      <div className="flex items-center justify-between p-4 border-b border-gray-700">
-        {sidebarOpen && (
-          <div>
-            <h1 className="text-xl font-bold">Supervisor Panel</h1>
-            <p className="text-xs text-gray-400 mt-1">Limited Access</p>
-          </div>
-        )}
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-5 border-b border-gray-700/60">
+        <div className={`overflow-hidden transition-all duration-300 ${sidebarOpen ? 'w-auto opacity-100' : 'w-0 opacity-0 lg:opacity-0'}`}>
+          <p className="text-xs font-bold tracking-widest text-indigo-400 uppercase">Supervisor</p>
+          <h1 className="text-base font-extrabold text-white whitespace-nowrap leading-tight">Control Panel</h1>
+        </div>
+        {/* Mobile: X to close | Desktop: chevron to collapse */}
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-1 rounded-lg hover:bg-gray-700 transition-colors"
+          className="p-2 rounded-xl hover:bg-gray-700 transition-colors text-gray-400 hover:text-white flex-shrink-0 cursor-pointer"
         >
-          {sidebarOpen ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
+          <span className="lg:hidden"><X size={19} /></span>
+          <span className="hidden lg:block">
+            {sidebarOpen ? <ChevronLeft size={19} /> : <ChevronRight size={19} />}
+          </span>
         </button>
       </div>
 
-      <nav className="flex-1 overflow-y-auto mt-6">
-        <ul className="space-y-2 px-3">
-          {menuItems.map((item, index) => (
-            <li key={index}>
+      {/* Nav */}
+      <nav className="flex-1 overflow-y-auto py-4 overflow-x-hidden">
+        <ul className="space-y-0.5 px-3">
+          {menuItems.map((item) => (
+            <li key={item.name}>
               {item.subItems ? (
+                /* ── Dropdown group ── */
                 <div>
                   <button
-                    onClick={() => toggleDropdown(item.name)}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-colors hover:bg-gray-700 ${
-                      sidebarOpen ? 'justify-between' : 'justify-center'
-                    }`}
+                    onClick={() => {
+                      // On collapsed desktop: expand sidebar first
+                      if (!sidebarOpen && window.innerWidth >= 1024) {
+                        setSidebarOpen(true);
+                      }
+                      toggleDropdown(item.name);
+                    }}
+                    className={`w-full flex items-center px-3 py-3 rounded-xl transition-all cursor-pointer
+                      ${sidebarOpen ? 'justify-between' : 'lg:justify-center'}
+                      ${isSubActive(item)
+                        ? 'bg-indigo-600/20 text-indigo-300'
+                        : 'text-gray-400 hover:bg-gray-700/60 hover:text-white'
+                      }`}
                   >
-                    <div className="flex items-center space-x-3">
-                      <item.icon size={20} />
-                      {sidebarOpen && <span>{item.name}</span>}
+                    <div className="flex items-center gap-3">
+                      <item.icon size={19} strokeWidth={isSubActive(item) ? 2.2 : 1.8} className="flex-shrink-0" />
+                      <span className={`text-sm font-semibold whitespace-nowrap transition-all duration-300 overflow-hidden
+                        ${sidebarOpen ? 'opacity-100 max-w-xs' : 'opacity-0 max-w-0 lg:hidden'}`}>
+                        {item.name}
+                      </span>
                     </div>
                     {sidebarOpen && (
                       <ChevronDown
-                        size={16}
-                        className={`transition-transform duration-200 ${
-                          openDropdown === item.name ? 'rotate-180' : ''
-                        }`}
+                        size={15}
+                        className={`transition-transform duration-200 flex-shrink-0 ${openDropdown === item.name ? 'rotate-180' : ''}`}
                       />
                     )}
                   </button>
+
+                  {/* Sub-items */}
                   {sidebarOpen && openDropdown === item.name && (
-                    <ul className="ml-9 mt-2 space-y-1">
-                      {item.subItems.map((subItem, subIndex) => (
-                        <li key={subIndex}>
+                    <ul className="mt-1 ml-4 pl-3 border-l border-gray-700/60 space-y-0.5">
+                      {item.subItems.map((sub) => (
+                        <li key={sub.path}>
                           <NavLink
-                            to={subItem.path}
+                            to={sub.path}
+                            onClick={() => { if (window.innerWidth < 1024) setSidebarOpen(false); }}
                             className={({ isActive }) =>
-                              `block px-3 py-2 text-sm rounded-lg transition-colors ${
-                                isActive
-                                  ? 'bg-gray-700 text-white'
-                                  : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                              `flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm transition-all
+                              ${isActive
+                                ? 'bg-indigo-600 text-white font-semibold'
+                                : 'text-gray-400 hover:bg-gray-700/60 hover:text-white'
                               }`
                             }
                           >
-                            {subItem.name}
+                            <sub.icon size={15} className="flex-shrink-0" />
+                            {sub.name}
                           </NavLink>
                         </li>
                       ))}
@@ -135,27 +151,50 @@ const SupervisorSidebar = ({ sidebarOpen, setSidebarOpen }) => {
                   )}
                 </div>
               ) : (
+                /* ── Direct link ── */
                 <NavLink
                   to={item.path}
+                  onClick={() => { if (window.innerWidth < 1024) setSidebarOpen(false); }}
                   className={({ isActive }) =>
-                    `flex items-center ${
-                      sidebarOpen ? 'justify-start' : 'justify-center'
-                    } space-x-3 px-3 py-2 rounded-lg transition-colors ${
-                      isActive
-                        ? 'bg-gray-700 text-white'
-                        : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                    `flex items-center gap-3 px-3 py-3 rounded-xl transition-all
+                    ${sidebarOpen ? '' : 'lg:justify-center'}
+                    ${isActive
+                      ? 'bg-indigo-600 text-white font-semibold'
+                      : 'text-gray-400 hover:bg-gray-700/60 hover:text-white'
                     }`
                   }
                 >
-                  <item.icon size={20} />
-                  {sidebarOpen && <span>{item.name}</span>}
+                  {({ isActive }) => (
+                    <>
+                      <item.icon size={19} strokeWidth={isActive ? 2.2 : 1.8} className="flex-shrink-0" />
+                      <span className={`text-sm whitespace-nowrap transition-all duration-300 overflow-hidden
+                        ${sidebarOpen ? 'opacity-100 max-w-xs' : 'opacity-0 max-w-0 lg:hidden'}`}>
+                        {item.name}
+                      </span>
+                    </>
+                  )}
                 </NavLink>
               )}
             </li>
           ))}
         </ul>
       </nav>
-    </div>
+
+      {/* User footer */}
+      <div className={`px-4 py-4 border-t border-gray-700/60 ${sidebarOpen ? '' : 'lg:px-3'}`}>
+        <div className={`flex items-center gap-3 ${sidebarOpen ? '' : 'lg:justify-center'}`}>
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xs font-extrabold flex-shrink-0">
+            {localUser?.name?.charAt(0)?.toUpperCase() || 'S'}
+          </div>
+          <div className={`overflow-hidden transition-all duration-300 min-w-0 ${sidebarOpen ? 'opacity-100 max-w-xs' : 'opacity-0 max-w-0 lg:hidden'}`}>
+            <p className="text-xs font-bold text-white whitespace-nowrap leading-tight truncate">
+              {localUser?.name || 'Supervisor'}
+            </p>
+            <p className="text-xs text-gray-500 capitalize">{localUser?.role || 'supervisor'}</p>
+          </div>
+        </div>
+      </div>
+    </aside>
   );
 };
 
