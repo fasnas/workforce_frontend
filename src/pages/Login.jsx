@@ -27,7 +27,7 @@ const Login = () => {
         case 'supervisor':
           navigate('/supervisor/dashboard');
           break;
-        case 'user':
+        case 'labour':
           navigate('/user/dashboard');
           break;
         default:

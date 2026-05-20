@@ -134,13 +134,12 @@ const AdminUsers = () => {
   const StatsCards = () => {
     const stats = [
       {
-        title: 'Total Labour',
+        title: 'Total Employees',
         value: labours.length,
         icon: HardHat,
         color: 'bg-blue-500',
         bgColor: 'bg-blue-50',
         textColor: 'text-blue-600',
-        change: '+12%'
       },
       {
         title: 'Total Supervisors',
@@ -149,26 +148,8 @@ const AdminUsers = () => {
         color: 'bg-purple-500',
         bgColor: 'bg-purple-50',
         textColor: 'text-purple-600',
-        change: '+5%'
       },
-      {
-        title: 'Active Users',
-        value: labours.length + supervisors.length,
-        icon: CheckCircle,
-        color: 'bg-green-500',
-        bgColor: 'bg-green-50',
-        textColor: 'text-green-600',
-        change: '+8%'
-      },
-      {
-        title: 'New This Month',
-        value: '12',
-        icon: Users,
-        color: 'bg-yellow-500',
-        bgColor: 'bg-yellow-50',
-        textColor: 'text-yellow-600',
-        change: '+3'
-      }
+      
     ];
 
     return (
@@ -256,7 +237,7 @@ const AdminUsers = () => {
                     Active
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                {/* <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex items-center justify-end space-x-2">
                     <button
                       onClick={() => navigate(`/admin/users/${user._id}`)}
@@ -283,7 +264,7 @@ const AdminUsers = () => {
                       <Trash2 size={18} />
                     </button>
                   </div>
-                </td>
+                </td> */}
               </tr>
             ))}
           </tbody>
@@ -301,7 +282,7 @@ const AdminUsers = () => {
           <p className="text-gray-600 mt-1">Manage labour and supervisor accounts</p>
         </div>
         <button
-          onClick={() => navigate('/admin/users/add')}
+          onClick={() => navigate('/admin/adduser')}
           className="bg-blue-600 text-white px-5 py-2.5 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 shadow-sm"
         >
           <UserPlus size={18} />
@@ -373,21 +354,6 @@ const AdminUsers = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
-            </div>
-            <div className="flex space-x-3">
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="all">All Status</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
-              <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center space-x-2">
-                <Download size={18} />
-                <span>Export</span>
-              </button>
             </div>
           </div>
         </div>

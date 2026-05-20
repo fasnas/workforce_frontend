@@ -31,7 +31,6 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
       subItems: [
         { name: 'All Users', path: '/admin/users' },
         { name: 'Add User', path: '/admin/adduser' },
-        { name: 'Roles & Permissions', path: '/admin/users/roles' },
       ],
     },
     {
@@ -42,24 +41,24 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }) => {
         { name: 'Add Project', path: '/admin/addproject' },
       ],
     },
-    {
-      name: 'Orders',
-      icon: ShoppingCart,
-      subItems: [
-        { name: 'All Orders', path: '/admin/orders' },
-        { name: 'Pending Orders', path: '/admin/orders/pending' },
-        { name: 'Completed Orders', path: '/admin/orders/completed' },
-      ],
-    },
-    {
-      name: 'Reports',
-      icon: BarChart3,
-      subItems: [
-        { name: 'Sales Report', path: '/admin/reports/sales' },
-        { name: 'User Report', path: '/admin/reports/users' },
-        { name: 'Activity Log', path: '/admin/reports/activity' },
-      ],
-    },
+    // {
+    //   name: 'Orders',
+    //   icon: ShoppingCart,
+    //   subItems: [
+    //     { name: 'All Orders', path: '/admin/orders' },
+    //     { name: 'Pending Orders', path: '/admin/orders/pending' },
+    //     { name: 'Completed Orders', path: '/admin/orders/completed' },
+    //   ],
+    // },
+    // {
+    //   name: 'Reports',
+    //   icon: BarChart3,
+    //   subItems: [
+    //     { name: 'Sales Report', path: '/admin/reports/sales' },
+    //     { name: 'User Report', path: '/admin/reports/users' },
+    //     { name: 'Activity Log', path: '/admin/reports/activity' },
+    //   ],
+    // },
     {
       name: 'System Settings',
       path: '/admin/settings',

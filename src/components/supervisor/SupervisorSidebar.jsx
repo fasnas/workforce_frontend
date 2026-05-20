@@ -24,16 +24,16 @@ const SupervisorSidebar = ({ sidebarOpen, setSidebarOpen }) => {
       icon: LayoutDashboard,
     },
     {
-      name: 'Team Members',
-      path: '/supervisor/team',
-      icon: Users,
+      name: 'Create project',
+      path: '/supervisor/addproject',
+      icon: Package,
     },
     {
-      name: 'Products',
+      name: 'All project',
       icon: Package,
       subItems: [
-        { name: 'View Products', path: '/supervisor/products' },
-        { name: 'Pending Approval', path: '/supervisor/products/pending' },
+        { name: 'Potential Project', path: '/supervisor/potentialproject' },
+        { name: 'Ongoing Project', path: '/supervisor/ongoingprojects' },
       ],
     },
     {

@@ -152,10 +152,13 @@ const AdminProjects = () => {
   const ProjectCard = ({ project }) => {
     const statusConfig = getStatusConfig(project.status);
     const StatusIcon = statusConfig.icon;
-
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 group">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 group"
+           onClick={() => navigate(`/admin/allprojects/${project._id}`)}
+
+      >
         {/* Status Bar */}
+        
         <div className={`h-1.5 w-full ${statusConfig.bgColor.replace('100', '500')}`}></div>
         
         <div className="p-5">
@@ -182,7 +185,7 @@ const AdminProjects = () => {
               >
                 <MoreVertical size={18} className="text-gray-500" />
               </button>
-              <div
+              {/* <div
                 id={`dropdown-${project._id}`}
                 className="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10"
               >
@@ -215,7 +218,7 @@ const AdminProjects = () => {
                   <Trash2 size={16} />
                   <span>Delete Project</span>
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -280,8 +283,8 @@ const AdminProjects = () => {
           <p className="text-gray-600 mt-1">Manage and track all construction projects</p>
         </div>
         <button
-          onClick={() => navigate('/admin/projects/add')}
-          className="bg-blue-600 text-white px-5 py-2.5 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 shadow-sm"
+          onClick={() => navigate('/admin/addproject')}
+            className="bg-blue-600 text-white px-5 py-2.5 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 shadow-sm"
         >
           <Plus size={18} />
           <span>New Project</span>
@@ -302,7 +305,7 @@ const AdminProjects = () => {
         <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl p-5 text-white">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm opacity-90">Pending</p>
+              <p className="text-sm opacity-90">Potential Project</p>
               <p className="text-3xl font-bold mt-1">{stats.pending}</p>
             </div>
             <Clock size={32} className="opacity-80" />
@@ -369,10 +372,10 @@ const AdminProjects = () => {
           </div>
           
           {/* Export Button */}
-          <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center space-x-2">
+          {/* <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center space-x-2">
             <Download size={18} />
             <span>Export</span>
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -431,7 +434,7 @@ const AdminProjects = () => {
           {/* Projects Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {currentProjects.map((project) => (
-              <ProjectCard key={project._id} project={project} />
+              <ProjectCard key={project._id} project={project}  />
             ))}
           </div>
           

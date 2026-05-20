@@ -22,35 +22,16 @@ const UserSidebar = ({ sidebarOpen, setSidebarOpen }) => {
       icon: LayoutDashboard,
     },
     {
-      name: 'My Orders',
-      path: '/user/orders',
+      name: 'Projects',
+      path: '/user/projects',
       icon: ShoppingCart,
     },
-    {
-      name: 'Order History',
-      path: '/user/orders/history',
-      icon: Clock,
-    },
-    {
-      name: 'Track Order',
-      path: '/user/track-order',
-      icon: Truck,
-    },
-    {
-      name: 'Wishlist',
-      path: '/user/wishlist',
-      icon: Heart,
-    },
-    {
-      name: 'Profile',
-      path: '/user/profile',
-      icon: User,
-    },
-    {
-      name: 'Settings',
-      path: '/user/settings',
-      icon: Settings,
-    },
+    // {
+    //   name: 'Order History',
+    //   path: '/user/orders/history',
+    //   icon: Clock,
+    // },
+  
   ];
 
   return (

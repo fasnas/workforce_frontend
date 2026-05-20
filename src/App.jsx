@@ -22,9 +22,18 @@ import AdminProjects from './pages/admin/AdminProjects';
 
 // Supervisor Pages
 import SupervisorDashboard from './pages/supervisor/SupervisorDashboard';
+import SupervisorPotentialProjectAdd from './pages/supervisor/SupervisorAddProject';
+import SupervisorPotentialProject from './pages/supervisor/SupervisorPotentialProject';
 
 // User Pages
 import UserDashboard from './pages/user/UserDashboard';
+import SingleProjects from './pages/admin/SingleProjects';
+import UserProjects from './pages/user/UserProjects';
+import UserSingleProject from './pages/user/UserSingleProject';
+import SupervisorOngoigProject from './pages/supervisor/SupervisorOngoigProject';
+import SupervisorSingleProject from './pages/supervisor/SupervisorSingleOngoingProject';
+import SupervisorSinglePotentialProject from './pages/supervisor/SupervisorSinglePotentialProject';
+import SupervisorSingleOngoingProject from './pages/supervisor/SupervisorSingleOngoingProject';
 
 
 function App() {
@@ -47,6 +56,8 @@ function App() {
             <Route path="users" element={<AdminUsers />} />
             <Route path="addproject" element={<AdminAddProject />} />
             <Route path="allprojects" element={<AdminProjects />} />
+            <Route path="allprojects/:id" element={<SingleProjects />} />
+
             {/* <Route path="users" element={<AdminUsers />} />
             <Route path="products" element={<AdminProducts />} />
             <Route path="orders" element={<AdminOrders />} />
@@ -61,19 +72,24 @@ function App() {
           }>
             <Route index element={<Navigate to="/supervisor/dashboard" replace />} />
             <Route path="dashboard" element={<SupervisorDashboard />} />
-            {/* <Route path="team" element={<SupervisorTeam />} />
-            <Route path="products" element={<SupervisorProducts />} />
-            <Route path="orders" element={<SupervisorOrders />} /> */}
+            <Route path="addproject" element={<SupervisorPotentialProjectAdd />} />
+            <Route path="potentialproject" element={<SupervisorPotentialProject />} />
+            <Route path="potentialproject/:id" element={<SupervisorSinglePotentialProject />} />
+            <Route path="ongoingprojects" element={<SupervisorOngoigProject />} />
+            <Route path="ongoingprojects/:id" element={<SupervisorSingleOngoingProject />} />
+           
           </Route>
           
           {/* User Routes */}
           <Route path="/user" element={
-            <ProtectedRoute allowedRoles={['user']}>
+            <ProtectedRoute allowedRoles={['labour']}>
               <UserLayout />
             </ProtectedRoute>
           }>
             <Route index element={<Navigate to="/user/dashboard" replace />} />
             <Route path="dashboard" element={<UserDashboard />} />
+            <Route path="projects" element={<UserProjects />} />
+            <Route path="projects/:id" element={<UserSingleProject />} />
             {/* <Route path="orders" element={<UserOrders />} />
             <Route path="profile" element={<UserProfile />} />
             <Route path="wishlist" element={<UserWishlist />} /> */}
