@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, FolderKanban, X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const menuItems = [
-  { name: 'Dashboard', path: '/user/dashboard', icon: LayoutDashboard },
+  // { name: 'Dashboard', path: '/user/dashboard', icon: LayoutDashboard },
   { name: 'Projects',  path: '/user/projects',  icon: FolderKanban    },
 ];
 

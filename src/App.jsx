@@ -86,7 +86,7 @@ function App() {
               <UserLayout />
             </ProtectedRoute>
           }>
-            <Route index element={<Navigate to="/user/dashboard" replace />} />
+            <Route index element={<Navigate to="/user/projects" replace />} />
             <Route path="dashboard" element={<UserDashboard />} />
             <Route path="projects" element={<UserProjects />} />
             <Route path="projects/:id" element={<UserSingleProject />} />

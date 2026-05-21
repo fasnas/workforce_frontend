@@ -476,12 +476,244 @@
 
 // export default AdminDashboard;
 
-import React from 'react'
+import React from "react";
+
+const dashboardData = {
+  totalEmployees: 3,
+  totalSupervisors: 1,
+  totalUsers: 2,
+  totalProjects: 3,
+  activeProjects: 1,
+  activePotentialProjects: 2,
+  completedProjects: 0,
+};
+
+const StatCard = ({ icon, value, label, sub, iconBg, iconColor }) => (
+  <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-4 hover:border-gray-200 dark:hover:border-gray-700 transition-colors">
+    <div
+      className={`w-8 h-8 rounded-lg flex items-center justify-center mb-3 text-base ${iconBg} ${iconColor}`}
+    >
+      {icon}
+    </div>
+    <div className="text-3xl font-semibold text-gray-900 dark:text-white font-mono leading-none mb-1">
+      {value}
+    </div>
+    <div className="text-xs text-gray-500 dark:text-gray-400">{label}</div>
+    {sub && (
+      <div className="mt-2 pt-2 border-t border-gray-100 dark:border-gray-800 text-xs text-gray-400 dark:text-gray-500">
+        {sub}
+      </div>
+    )}
+  </div>
+);
+
+const ProjectCard = ({ label, value, total, color, dotColor, barColor }) => {
+  const pct = total > 0 ? Math.round((value / total) * 100) : 0;
+  return (
+    <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-4 hover:border-gray-200 dark:hover:border-gray-700 transition-colors">
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-xs text-gray-500 dark:text-gray-400">{label}</span>
+        <span className={`w-2 h-2 rounded-full ${dotColor}`}></span>
+      </div>
+      <div className="text-4xl font-semibold text-gray-900 dark:text-white font-mono leading-none">
+        {value}
+      </div>
+      <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+        of {total} total projects
+      </div>
+      <div className="mt-3 h-1 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+        <div
+          className={`h-full rounded-full transition-all duration-700 ${barColor}`}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+    </div>
+  );
+};
+
+const RatioBar = ({ segments }) => (
+  <div className="flex h-2 rounded-full overflow-hidden gap-0.5">
+    {segments.map((s, i) => (
+      <div
+        key={i}
+        className={`rounded-sm transition-all duration-700 ${s.color}`}
+        style={{ width: `${s.pct}%` }}
+      />
+    ))}
+  </div>
+);
 
 const AdminDashboard = () => {
-  return (
-    <div>AdminDashboard</div>
-  )
-}
+  const {
+    totalEmployees,
+    totalSupervisors,
+    totalUsers,
+    totalProjects,
+    activeProjects,
+    activePotentialProjects,
+    completedProjects,
+  } = dashboardData;
 
-export default AdminDashboard
+  const supPct = Math.round((totalSupervisors / totalEmployees) * 100);
+  const userPct = Math.round((totalUsers / totalEmployees) * 100);
+  const activePct = Math.round((activeProjects / totalProjects) * 100);
+  const potentialPct = Math.round((activePotentialProjects / totalProjects) * 100);
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 p-4 sm:p-6 lg:p-8">
+      <div className="max-w-5xl mx-auto">
+
+        {/* Header */}
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-8">
+          <div>
+            <h1 className="text-xl font-semibold text-gray-900 dark:text-white tracking-tight">
+              Admin dashboard
+            </h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+              Overview of all people and projects
+            </p>
+          </div>
+          <div className="flex items-center gap-2 text-xs font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800 px-3 py-1.5 rounded-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            Live data
+          </div>
+        </div>
+
+        {/* People section */}
+        <p className="text-[11px] font-medium uppercase tracking-widest text-gray-400 dark:text-gray-600 mb-3">
+          People
+        </p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 mb-6">
+          <StatCard
+            icon={<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>}
+            value={totalEmployees}
+            label="Total employees"
+            sub="All active members"
+            iconBg="bg-blue-50 dark:bg-blue-950"
+            iconColor="text-blue-600 dark:text-blue-400"
+          />
+          <StatCard
+            icon={<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>}
+            value={totalSupervisors}
+            label="Supervisors"
+            sub={`${supPct}% of employees`}
+            iconBg="bg-violet-50 dark:bg-violet-950"
+            iconColor="text-violet-600 dark:text-violet-400"
+          />
+          <StatCard
+            icon={<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>}
+            value={totalUsers}
+            label="Standard users"
+            sub={`${userPct}% of employees`}
+            iconBg="bg-teal-50 dark:bg-teal-950"
+            iconColor="text-teal-600 dark:text-teal-400"
+          />
+        </div>
+
+        {/* Divider */}
+        <div className="border-t border-gray-100 dark:border-gray-800 my-6" />
+
+        {/* Projects section */}
+        <p className="text-[11px] font-medium uppercase tracking-widest text-gray-400 dark:text-gray-600 mb-3">
+          Projects
+        </p>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-6">
+          <StatCard
+            icon={<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>}
+            value={totalProjects}
+            label="Total projects"
+            sub="All time"
+            iconBg="bg-amber-50 dark:bg-amber-950"
+            iconColor="text-amber-600 dark:text-amber-400"
+          />
+          <StatCard
+            icon={<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>}
+            value={activeProjects}
+            label="Active projects"
+            sub="In progress"
+            iconBg="bg-green-50 dark:bg-green-950"
+            iconColor="text-green-600 dark:text-green-400"
+          />
+          <StatCard
+            icon={<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>}
+            value={activePotentialProjects}
+            label="Potential projects"
+            sub="Pending activation"
+            iconBg="bg-orange-50 dark:bg-orange-950"
+            iconColor="text-orange-500 dark:text-orange-400"
+          />
+          <StatCard
+            icon={<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>}
+            value={completedProjects}
+            label="Completed"
+            sub="None completed yet"
+            iconBg="bg-gray-100 dark:bg-gray-800"
+            iconColor="text-gray-500 dark:text-gray-400"
+          />
+        </div>
+
+        {/* Divider */}
+        <div className="border-t border-gray-100 dark:border-gray-800 my-6" />
+
+        
+
+        {/* Summary cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-4">
+            <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+              Team composition
+            </div>
+            <RatioBar
+              segments={[
+                { color: "bg-blue-400", pct: supPct },
+                { color: "bg-teal-400", pct: userPct },
+              ]}
+            />
+            <div className="flex gap-4 mt-2.5 flex-wrap">
+              <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+                <span className="w-2 h-2 rounded-full bg-blue-400" />
+                Supervisors ({totalSupervisors})
+              </div>
+              <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+                <span className="w-2 h-2 rounded-full bg-teal-400" />
+                Users ({totalUsers})
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-4">
+            <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              Project status
+            </div>
+            <RatioBar
+              segments={[
+                { color: "bg-emerald-400", pct: activePct },
+                { color: "bg-amber-400", pct: potentialPct },
+                { color: "bg-gray-200 dark:bg-gray-700", pct: 0 },
+              ]}
+            />
+            <div className="flex gap-4 mt-2.5 flex-wrap">
+              <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+                <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                Active ({activeProjects})
+              </div>
+              <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+                <span className="w-2 h-2 rounded-full bg-amber-400" />
+                Potential ({activePotentialProjects})
+              </div>
+              <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+                <span className="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600" />
+                Completed ({completedProjects})
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+export default AdminDashboard;

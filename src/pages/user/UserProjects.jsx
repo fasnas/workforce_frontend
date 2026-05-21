@@ -56,8 +56,8 @@ const UserProjects = () => {
 
       {/* ── Page header ── */}
       <div>
-        <p className="text-xs font-bold tracking-widest text-indigo-500 uppercase">Labour Portal</p>
-        <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 mt-1">My Projects</h1>
+        <p className="text-xs font-bold tracking-widest text-indigo-500 uppercase">Employee Portal</p>
+        <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 mt-1">Projects</h1>
         <p className="text-sm text-gray-400 mt-1">Browse and track all your assigned projects</p>
       </div>
 

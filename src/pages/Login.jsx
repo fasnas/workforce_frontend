@@ -22,7 +22,7 @@ const Login = () => {
       switch (result.user.role) {
         case 'admin':      navigate('/admin/dashboard');      break;
         case 'supervisor': navigate('/supervisor/dashboard'); break;
-        case 'labour':     navigate('/user/dashboard');       break;
+        case 'labour':     navigate('/user/projects');       break;
         default:           navigate('/');
       }
     } else {
