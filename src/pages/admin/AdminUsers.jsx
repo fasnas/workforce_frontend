@@ -135,7 +135,7 @@ const AdminUsers = () => {
     const stats = [
       {
         title: 'Total Employees',
-        value: labours.length,
+        value: labours.length+supervisors.length,
         icon: HardHat,
         color: 'bg-blue-500',
         bgColor: 'bg-blue-50',
@@ -205,7 +205,7 @@ const AdminUsers = () => {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {users.map((user) => (
-              <tr key={user._id} className="hover:bg-gray-50 transition-colors">
+              <tr key={user._id} className="hover:bg-gray-50 transition-colors" onClick={()=>navigate(`/admin/users/${user._id}`)}>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 h-10 w-10">
@@ -311,7 +311,7 @@ const AdminUsers = () => {
             >
               <div className="flex items-center space-x-2">
                 <HardHat size={18} />
-                <span>Labour</span>
+                <span>user</span>
                 <span className="ml-2 bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-xs">
                   {labours.length}
                 </span>

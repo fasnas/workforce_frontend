@@ -34,6 +34,8 @@ import SupervisorOngoigProject from './pages/supervisor/SupervisorOngoigProject'
 import SupervisorSingleProject from './pages/supervisor/SupervisorSingleOngoingProject';
 import SupervisorSinglePotentialProject from './pages/supervisor/SupervisorSinglePotentialProject';
 import SupervisorSingleOngoingProject from './pages/supervisor/SupervisorSingleOngoingProject';
+import AdminSingleUser from './pages/admin/AdminSingleUser';
+import AdminSingleUserProjectLog from './pages/admin/AdminSingleUserProjectLog';
 
 
 function App() {
@@ -54,6 +56,8 @@ function App() {
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="adduser" element={<AdminAddUser />} />
             <Route path="users" element={<AdminUsers />} />
+            <Route path="users/:id" element={<AdminSingleUser />} />
+            <Route path="users/:userId/:projectId" element={<AdminSingleUserProjectLog />} />
             <Route path="addproject" element={<AdminAddProject />} />
             <Route path="allprojects" element={<AdminProjects />} />
             <Route path="allprojects/:id" element={<SingleProjects />} />

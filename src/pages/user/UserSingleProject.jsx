@@ -9,14 +9,16 @@ import {
 } from 'lucide-react';
 
 /* ─── Helpers ──────────────────────────────────────────────────────────── */
-const fmt     = (d) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+const fmt = (d) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 const fmtTime = (d) => new Date(d).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-const today   = () => new Date().toISOString().split('T')[0];
+
+const today     = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
+const yesterday = () => { const d = new Date(); d.setDate(d.getDate() - 1); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
 
 const statusConfig = {
-  pending:   { label: 'Pending',   bg: 'bg-amber-50',   text: 'text-amber-700',   border: 'border-amber-200',   dot: 'bg-amber-400'   },
-  ongoing:   { label: 'Ongoing',   bg: 'bg-blue-50',    text: 'text-blue-700',    border: 'border-blue-200',    dot: 'bg-blue-400 animate-pulse' },
-  completed: { label: 'Completed', bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', dot: 'bg-emerald-400'  },
+  pending: { label: 'Pending', bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200', dot: 'bg-amber-400' },
+  ongoing: { label: 'Ongoing', bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200', dot: 'bg-blue-400 animate-pulse' },
+  completed: { label: 'Completed', bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', dot: 'bg-emerald-400' },
 };
 
 /* ─── Toast ────────────────────────────────────────────────────────────── */
@@ -49,8 +51,8 @@ const Toast = ({ toast, onClose }) => {
 const LogRow = ({ log, index }) => {
   const [expanded, setExpanded] = useState(false);
   const hourColor = log.logHours >= 8 ? 'text-emerald-600 bg-emerald-50 border-emerald-200'
-                  : log.logHours >= 5 ? 'text-blue-600 bg-blue-50 border-blue-200'
-                  : 'text-amber-600 bg-amber-50 border-amber-200';
+    : log.logHours >= 5 ? 'text-blue-600 bg-blue-50 border-blue-200'
+      : 'text-amber-600 bg-amber-50 border-amber-200';
 
   return (
     <div
@@ -100,6 +102,7 @@ const LogRow = ({ log, index }) => {
 };
 
 /* ─── Modal ────────────────────────────────────────────────────────────── */
+
 const LogTimeModal = ({ show, onClose, onSubmit, formData, onChange, submitting }) => {
   if (!show) return null;
 
@@ -136,24 +139,26 @@ const LogTimeModal = ({ show, onClose, onSubmit, formData, onChange, submitting 
         {/* Form */}
         <form onSubmit={onSubmit} className="px-5 py-5 space-y-4">
 
-          {/* Work Date */}
-          <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
-              Work Date
-            </label>
-            <div className="relative">
-              <Calendar size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-              <input
-                type="date"
-                name="workDate"
-                value={formData.workDate}
-                onChange={onChange}
-                max={today()}
-                required
-                className="w-full pl-9 pr-4 py-3 text-sm font-medium text-gray-800 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition-all"
-              />
-            </div>
-          </div>
+{/* Work Date */}
+<div>
+  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+    Work Date
+  </label>
+  <div className="relative">
+    <Calendar size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+    <input
+      type="date"
+      name="workDate"
+      value={formData.workDate}
+      onChange={onChange}
+      min={yesterday()}
+      max={today()}
+      onKeyDown={(e) => e.preventDefault()}
+      required
+      className="w-full pl-9 pr-4 py-3 text-sm font-medium text-gray-800 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition-all"
+    />
+  </div>
+</div>
 
           {/* Log Hours */}
           <div>
@@ -174,23 +179,7 @@ const LogTimeModal = ({ show, onClose, onSubmit, formData, onChange, submitting 
                 className="w-full pl-9 pr-4 py-3 text-sm font-medium text-gray-800 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition-all"
               />
             </div>
-            {/* Quick hour buttons */}
-            <div className="flex gap-2 mt-2">
-              {[2, 4, 6, 8].map(h => (
-                <button
-                  key={h}
-                  type="button"
-                  onClick={() => onChange({ target: { name: 'logHours', value: h } })}
-                  className={`flex-1 py-1.5 text-xs font-bold rounded-lg border transition-all cursor-pointer
-                    ${Number(formData.logHours) === h
-                      ? 'bg-indigo-600 text-white border-indigo-600'
-                      : 'bg-white text-gray-500 border-gray-200 hover:border-indigo-300 hover:text-indigo-500'
-                    }`}
-                >
-                  {h}h
-                </button>
-              ))}
-            </div>
+
           </div>
 
           {/* Description */}
@@ -238,13 +227,13 @@ const LogTimeModal = ({ show, onClose, onSubmit, formData, onChange, submitting 
 /* ─── Main ─────────────────────────────────────────────────────────────── */
 const SingleProject = () => {
   const { id } = useParams();
-  const [project,    setProject]    = useState(null);
-  const [timeLogs,   setTimeLogs]   = useState([]);
-  const [loading,    setLoading]    = useState(true);
-  const [showModal,  setShowModal]  = useState(false);
+  const [project, setProject] = useState(null);
+  const [timeLogs, setTimeLogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [toast,      setToast]      = useState(null);
-  const [formData,   setFormData]   = useState({ workDate: '', logHours: '', description: '' });
+  const [toast, setToast] = useState(null);
+  const [formData, setFormData] = useState({ workDate: '', logHours: '', description: '' });
 
   const getProject = async () => {
     try { const r = await axiosInstance.get(`/project/${id}`); setProject(r.data.project); }
@@ -288,15 +277,15 @@ const SingleProject = () => {
     <div className="space-y-5 p-1 animate-pulse">
       <div className="h-48 bg-gray-100 rounded-2xl" />
       <div className="grid grid-cols-3 gap-3">
-        {[1,2,3].map(i => <div key={i} className="h-20 bg-gray-100 rounded-2xl" />)}
+        {[1, 2, 3].map(i => <div key={i} className="h-20 bg-gray-100 rounded-2xl" />)}
       </div>
       <div className="h-64 bg-gray-100 rounded-2xl" />
     </div>
   );
 
-  const st          = statusConfig[project?.status] || statusConfig.pending;
-  const totalHours  = timeLogs.reduce((a, l) => a + l.logHours, 0);
-  const avgHours    = timeLogs.length > 0 ? (totalHours / timeLogs.length).toFixed(1) : 0;
+  const st = statusConfig[project?.status] || statusConfig.pending;
+  const totalHours = timeLogs.reduce((a, l) => a + l.logHours, 0);
+  const avgHours = timeLogs.length > 0 ? (totalHours / timeLogs.length).toFixed(1) : 0;
 
   return (
     <>
@@ -367,7 +356,7 @@ const SingleProject = () => {
         {/* ── Stats ── */}
         <div className="grid grid-cols-3 gap-3">
           {[
-            { label: 'Total Logs',  value: timeLogs.length, color: 'text-indigo-600', bg: 'bg-indigo-50 border-indigo-100' },
+            { label: 'Total Logs', value: timeLogs.length, color: 'text-indigo-600', bg: 'bg-indigo-50 border-indigo-100' },
             { label: 'Total Hours', value: `${totalHours}h`, color: 'text-emerald-600', bg: 'bg-emerald-50 border-emerald-100' },
             // { label: 'Avg / Log',   value: `${avgHours}h`,  color: 'text-purple-600',  bg: 'bg-purple-50 border-purple-100'  },
           ].map(s => (

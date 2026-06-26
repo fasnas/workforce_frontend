@@ -27,11 +27,7 @@ const menuItems = [
       { name: 'Add project',  path: '/admin/addproject'  },
     ],
   },
-  {
-    name: 'Settings',
-    path: '/admin/settings',
-    icon: Settings,
-  },
+  
 ];
 
 /* ── Single nav item ── */

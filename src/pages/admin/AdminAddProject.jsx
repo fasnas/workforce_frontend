@@ -136,13 +136,7 @@ const AdminAddProject = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const statusOptions = [
-    { value: 'pending', label: 'Pending', color: 'yellow', description: 'Project is in planning phase' },
-    { value: 'ongoing', label: 'Ongoing', color: 'blue', description: 'Project is currently in progress' },
-    { value: 'completed', label: 'Completed', color: 'green', description: 'Project has been completed' }
-  ];
+  }; 
 
   const getStatusColor = (status) => {
     switch(status) {
@@ -287,36 +281,7 @@ const AdminAddProject = () => {
 
             {/* Project Status */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Project Status
-              </label>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {statusOptions.map((status) => {
-                  const isSelected = formData.status === status.value;
-                  return (
-                    <button
-                      key={status.value}
-                      type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, status: status.value }))}
-                      className={`relative p-3 border-2 rounded-lg text-left transition-all ${
-                        isSelected
-                          ? `border-${status.color}-500 bg-${status.color}-50`
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                    >
-                      <div className="flex items-center space-x-2">
-                        <div className={`w-2 h-2 rounded-full bg-${status.color}-500`}></div>
-                        <span className={`font-medium ${
-                          isSelected ? `text-${status.color}-700` : 'text-gray-900'
-                        }`}>
-                          {status.label}
-                        </span>
-                      </div>
-                      <p className="text-xs text-gray-500 mt-1">{status.description}</p>
-                    </button>
-                  );
-                })}
-              </div>
+              
             </div>
 
             {/* Description */}
